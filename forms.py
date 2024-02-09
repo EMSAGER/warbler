@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Email, Length, Optional
 
 class MessageForm(FlaskForm):
@@ -34,7 +34,9 @@ class UserEditForm(FlaskForm):
     bio = StringField("(Optional)Bio")
     password = PasswordField('Password')
     
-    
+class LikeForm(FlaskForm):
+    """the purpose of this form is to pass CSRF TOKEN through"""
+    pass
     
 
     

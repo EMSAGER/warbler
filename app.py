@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm, UserEditForm
-from models import db, connect_db, User, Message
+from forms import UserAddForm, LoginForm, MessageForm, UserEditForm, LikeForm
+from models import db, connect_db, User, Message, Likes
 
 CURR_USER_KEY = "curr_user"
 
@@ -164,6 +164,17 @@ def show_following(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('users/following.html', user=user)
 
+@app.route('/users/<int:user_id>/likes')
+def show_liked_messages(user_id):
+    """Show list of liked messages of this user."""
+    if not g.user:
+            flash("Access unauthorized.", "danger")
+            return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template('/users/likes.html', user=user)
+
+
 
 @app.route('/users/<int:user_id>/followers')
 def users_followers(user_id):
@@ -252,6 +263,7 @@ def delete_user():
     return redirect("/signup")
 
 
+
 ##############################################################################
 # Messages routes:
 
@@ -300,6 +312,23 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+@app.route('/users/add_like/<int:message_id>', methods=["GET", "POST"])
+def messages_user_favorite(message_id):
+    """User like a message"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    user = g.user.id
+    message_id = message_id
+    like = Likes.query.filter_by(user_id=user, message_id=message_id).first()
+    if like:
+        #to unlike something
+        db.session.delete(like)
+    else:
+        new_like = Likes(user_id=g.user.id, message_id=message_id)
+        db.session.add(new_like)
+    db.session.commit()
+    return redirect('/')
 
 ##############################################################################
 # Homepage and error pages
@@ -315,6 +344,7 @@ def homepage():
 
     if g.user:
         #ids of followed_users and current user's id
+        form = LikeForm()
         followed_user_ids = [user.id for user in g.user.following] + [g.user.id]
         messages = (Message
                     .query
@@ -324,8 +354,8 @@ def homepage():
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-
-        return render_template('home.html', messages=messages)
+        user_likes = [message.id for message in g.user.likes]
+        return render_template('home.html',form=form, messages=messages, user_likes=user_likes)
 
     else:
         return render_template('home-anon.html')
