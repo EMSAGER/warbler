@@ -94,21 +94,26 @@ class User(db.Model):
         nullable=False,
     )
 
-    messages = db.relationship('Message')
+    messages = db.relationship('Message', backref="user")
 
     followers = db.relationship(
         "User",
         secondary="follows",
         primaryjoin=(Follows.user_being_followed_id == id),
-        secondaryjoin=(Follows.user_following_id == id)
+        secondaryjoin=(Follows.user_following_id == id),
+        back_populates="following",  # Use back_populates instead of backref ##kept throwing an integrity error
+        overlaps="following",
     )
 
     following = db.relationship(
         "User",
         secondary="follows",
         primaryjoin=(Follows.user_following_id == id),
-        secondaryjoin=(Follows.user_being_followed_id == id)
+        secondaryjoin=(Follows.user_being_followed_id == id),
+        back_populates="followers",  # Use back_populates instead of backref
+        overlaps="followers",
     )
+
 
     likes = db.relationship(
         'Message',
@@ -193,11 +198,10 @@ class Message(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey('users.id', ondelete='CASCADE'), 
         nullable=False,
     )
 
-    user = db.relationship('User')
 
 
 def connect_db(app):

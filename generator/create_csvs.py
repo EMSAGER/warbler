@@ -14,7 +14,7 @@ from helpers import get_random_datetime
 
 MAX_WARBLER_LENGTH = 140
 
-USERS_CSV_HEADERS = ['email', 'username', 'image_url', 'password', 'bio', 'header_image_url', 'location']
+USERS_CSV_HEADERS = ['id', 'email', 'username', 'image_url', 'password', 'bio', 'header_image_url', 'location']
 MESSAGES_CSV_HEADERS = ['text', 'timestamp', 'user_id']
 FOLLOWS_CSV_HEADERS = ['user_being_followed_id', 'user_following_id']
 
