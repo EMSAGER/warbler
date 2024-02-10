@@ -52,7 +52,8 @@ class MessageModelTestCase(TestCase):
         self.app_context.pop()
 
     def test_message_creation(self):
-        """Test that a message can be successfully created and is associated with the correct user."""
+        """Test that a message can be successfully
+          created and is associated with the correct user."""
         with app.app_context():
             self.assertEqual(self.message.text, "Test message")
             self.assertEqual(self.message.user_id, self.user.id)
@@ -89,7 +90,8 @@ class MessageModelTestCase(TestCase):
                 db.session.commit()
 
     def test_user_message_relationship(self):
-        """Test that a user's messages are correctly associated."""
+        """Test that a user's messages 
+        are correctly associated."""
         with app.app_context():
             user = User.query.first()
             message = Message.query.first()
@@ -98,7 +100,8 @@ class MessageModelTestCase(TestCase):
             self.assertEqual(message.user, user)
 
     def test_message_belongs_to_user(self):
-        """Test that a message is associated with the correct user."""
+        """Test that a message is associated 
+        with the correct user."""
         with app.app_context():
             message = Message.query.first()
             self.assertEqual(message.user_id, self.user.id)

@@ -76,7 +76,8 @@ class UserModelTestCase(TestCase):
             self.assertEqual(repr(u1), f"<User #{u1.id}: {u1.username}, {u1.email}>")
 
     def test_is_following(self):
-        """Does is_following successfully detect when user1 is followed by user2?"""
+        """Does is_following successfully 
+        detect when user1 is followed by user2?"""
         with app.app_context():
             u1 = User.query.get(self.u1.id)
             u2 = User.query.get(self.u2.id)
@@ -88,7 +89,8 @@ class UserModelTestCase(TestCase):
             self.assertFalse(u2.is_following(u1))
     
     def test_is_followed_by(self):
-        """Does is_followed_by successfully detect when u1 is followed by u2?"""
+        """Does is_followed_by successfully 
+        detect when u1 is followed by u2?"""
         with app.app_context():
             u1 = User.query.get(self.u1.id)
             u2 = User.query.get(self.u2.id)
@@ -100,7 +102,8 @@ class UserModelTestCase(TestCase):
             self.assertFalse(u2.is_followed_by(u1))
 
     def test_user_signup(self):
-        """Tests if user.create will create a new user"""
+        """Tests if user.create will 
+        create a new user"""
         with app.app_context():
             u_test = User.signup("testsignup", "testsignup@test.com", "password", None)
             uid = 99999
@@ -115,7 +118,9 @@ class UserModelTestCase(TestCase):
             self.assertTrue(u_test.password.startswith("$2b$"))
 
     def test_invalid_user_signup(self):
-         """Does User.create fail to create a new user if any of the validations (e.g. uniqueness, non-nullable fields) fail?"""
+         """Does User.create fail to create a new user 
+         if any of the validations 
+         (e.g. uniqueness, non-nullable fields) fail?"""
          with app.app_context():
             invalid = User.signup(None, "test3@test.com", "password", None)
             uid = 123456789
@@ -124,7 +129,8 @@ class UserModelTestCase(TestCase):
                 db.session.commit()
     
     def test_valid_authentication(self):
-        """Does User.authenticate successfully return a user when given a valid username and password?"""
+        """Does User.authenticate successfully 
+        return a user when given a valid username and password?"""
         with app.app_context():
             u = User.authenticate(self.u1.username, "password")
             self.assertIsNotNone(u)
@@ -132,11 +138,13 @@ class UserModelTestCase(TestCase):
 
     
     def test_invalid_username(self):
-        """Does User.authenticate fail to return a user when the username is invalid?"""
+        """Does User.authenticate fail to 
+        return a user when the username is invalid?"""
         with app.app_context():
             self.assertFalse(User.authenticate("badusername", "password"))
 
     def test_wrong_password(self):
-        """Does User.authenticate fail to return a user when the password is invalid?"""
+        """Does User.authenticate fail to 
+        return a user when the password is invalid?"""
         with app.app_context():
             self.assertFalse(User.authenticate(self.u1.username, "badpassword"))
