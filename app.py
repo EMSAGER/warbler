@@ -110,7 +110,7 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-    session.pop('curr_user')
+    session.pop('curr_user', None)
     flash(f"Goodbye!", "primary")
     return redirect('/login')
 

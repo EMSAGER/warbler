@@ -83,7 +83,7 @@ class MessageModelTestCase(TestCase):
         """Test that a message cannot exceed 140 characters."""
             # Create a string that is too long
         with app.app_context():
-            long_text = "x" * 141  # Create a string that is too long
+            long_text = "x" * 141 
             message = Message(text=long_text, user_id=self.user.id)
             db.session.add(message)
             with self.assertRaises(DataError):  

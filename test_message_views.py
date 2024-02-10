@@ -119,7 +119,6 @@ class MessageViewTestCase(TestCase):
             db.session.add(new_msg)
             db.session.commit()
             with self.client as c:
-                    ##  below simulates LOGIN
                 with c.session_transaction() as sess:
                     sess[CURR_USER_KEY] = self.u1.id
                     
@@ -133,7 +132,6 @@ class MessageViewTestCase(TestCase):
         """Tests the message owner can delete a message"""
         with app.app_context():
             with self.client as c:
-                    ##  below simulates LOGIN
                 with c.session_transaction() as sess:
                     sess[CURR_USER_KEY] = self.u1.id
 
@@ -150,7 +148,7 @@ class MessageViewTestCase(TestCase):
         with app.app_context():
             other_user = User.signup(
                     username="unauthorizeduser",
-                    email="uniqueemail@test.com",  # Use a unique email address
+                    email="uniqueemail@test.com",
                     password="password",
                     image_url=None
                 )
@@ -204,9 +202,8 @@ class MessageViewTestCase(TestCase):
         """Test liking a message without being logged in."""
         with app.app_context():
             with self.client as c:
-                res = c.post(f'/users/add_like/{self.message_id}', follow_redirects=True)
-                self.assertEqual(res.status_code, 200)  # or 302, depending on your redirect logic
-
-                # Access session within the context of a client request
-                with c.session_transaction() as sess:
-                    self.assertNotIn('CURR_USER_KEY', sess)
+                res = c.get(f"/users/{self.u1.id}/likes", follow_redirects=True)
+                html = res.get_data(as_text=True)
+            self.assertEqual(res.status_code, 200)
+            self.assertIn("Access unauthorized.",html)
+            self.assertNotIn("A liked message",html)
